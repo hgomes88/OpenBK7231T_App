@@ -680,6 +680,7 @@ static int g_wifi_ledState = 0;
 static uint32_t g_time = 0;
 static uint32_t g_last_time = 0;
 int g_bWantPinDeepSleep;
+int g_bWantPinDeepSleepTimeS = 0;
 unsigned int g_deltaTimeMS;
 
 /////////////////////////////////////////////////////
