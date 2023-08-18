@@ -433,6 +433,13 @@ static commandResult_t CMD_FullBootTime(const void *context, const char *cmd, co
 }
 static commandResult_t CMD_PinDeepSleep(const void *context, const char *cmd, const char *args, int cmdFlags){
 	g_bWantPinDeepSleep = 1;
+
+	Tokenizer_TokenizeString(args, 0);
+
+	if (Tokenizer_GetArgsCount() > 0) {
+		g_bWantPinDeepSleepTimeS = Tokenizer_GetArgInteger(0);
+	}
+
 	return CMD_RES_OK;
 }
 void CMD_InitChannelCommands(){
@@ -491,8 +498,8 @@ void CMD_InitChannelCommands(){
 	//cmddetail:"fn":"CMD_FriendlyName","file":"cmnds/cmd_channels.c","requires":"",
 	//cmddetail:"examples":""}
 	CMD_RegisterCommand("FriendlyName", CMD_FriendlyName, NULL);
-	//cmddetail:{"name":"PinDeepSleep","args":"",
-	//cmddetail:"descr":"Starts a pin deep sleep (deep sleep that can be interrupted by external IO events like a button press)",
+	//cmddetail:{"name":"PinDeepSleep","args":"[OptionalSeconds]",
+	//cmddetail:"descr":"Starts a pin deep sleep (deep sleep that can be interrupted by external IO events like a button press). Optionally, also sets the sleep time for given amount of seconds (only supported on OpenBK7231N).",
 	//cmddetail:"fn":"CMD_PinDeepSleep","file":"cmnds/cmd_channels.c","requires":"",
 	//cmddetail:"examples":""}
 	CMD_RegisterCommand("PinDeepSleep", CMD_PinDeepSleep, NULL);

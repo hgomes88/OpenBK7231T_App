@@ -184,12 +184,34 @@ void PINS_BeginDeepSleepWithPinWakeUp() {
 	// NOTE: this function:
 	// void bk_enter_deep_sleep(UINT32 gpio_index_map,UINT32 gpio_edge_map)
 	// On BK7231T, will overwrite HAL pin settings, and depending on edge map,
-	// will set a internal pullup or internall pulldown
+	// will set a internal pullup or internal pulldown
 #ifdef PLATFORM_BK7231T
 	extern void deep_sleep_wakeup_with_gpio(UINT32 gpio_index_map, UINT32 gpio_edge_map);
 	deep_sleep_wakeup_with_gpio(g_gpio_index_map[0], g_gpio_edge_map[0]);
 #else
-	bk_enter_deep_sleep(g_gpio_index_map[0], g_gpio_edge_map[0]);
+	extern void deep_sleep_wakeup(
+		const UINT32 * g_gpio_index_map,
+		const UINT32 * g_gpio_edge_map,
+		const UINT32 * sleep_time
+	);
+
+	extern void bk_enter_deep_sleep(
+		UINT32 g_gpio_index_map,
+		UINT32 g_gpio_edge_map
+	);
+
+	// If the optional sleep time is set, then configure the deep sleep to
+	// wakeup on either the GPIO or Timer interrupt
+	if (g_bWantPinDeepSleepTimeS > 0) {
+		deep_sleep_wakeup(
+			(const UINT32*)&(g_gpio_index_map[0]),
+			(const UINT32*)&(g_gpio_edge_map[0]),
+			(const UINT32*)&g_bWantPinDeepSleepTimeS
+		);
+	}
+	else {
+		bk_enter_deep_sleep(g_gpio_index_map[0], g_gpio_edge_map[0]);
+	}
 #endif
 #else
 
